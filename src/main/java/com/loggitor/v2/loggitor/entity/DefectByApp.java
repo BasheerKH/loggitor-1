@@ -1,7 +1,9 @@
 package com.loggitor.v2.loggitor.entity;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 public class DefectByApp {
@@ -9,7 +11,7 @@ public class DefectByApp {
 	
 	private String _defectType;
 	private String _appName;
-	private Map<String, DefectCode> _defectCode;
+	private Set<DefectCode> _defectCode;
 	private int _firstDefectCode;
 	private int _totalCount;
 	private int _criticalSeverityCount;
@@ -18,16 +20,17 @@ public class DefectByApp {
 	private static String newLine ="\r\n";
 	
 	
-	public DefectByApp(String appName,String defectType, int defectCode) {
+	public DefectByApp(String appName,String defectType, DefectCode defectCode) {
 		super();
 		
 		_criticalSeverityCount=0;
 		_warningSeverityCount=0;
 		_errorSeverityCount=0;
-		_defectCode = new HashMap<String, DefectCode>();
+		_defectCode = new HashSet<DefectCode>();
+		
 		
 		// calculate severity
-		int severity = defectCode % 10;
+		int severity = defectCode.getCode() % 10;
 		
 		
 		switch(severity)
@@ -52,11 +55,12 @@ public class DefectByApp {
 		}
 		
 		
-		this._firstDefectCode = defectCode;
+		this._firstDefectCode = defectCode.getCode();
 		this._appName = appName;
 		this._defectType = defectType;
 		this._totalCount=1;
-		_defectCode.put(Integer.toString(defectCode), new DefectCode(defectCode,1));
+		_defectCode.add(defectCode);
+		//put(Integer.toString(defectCode), new DefectCode(defectCode,1));
 		
 	}
 
@@ -109,11 +113,14 @@ public class DefectByApp {
 		
 		_totalCount++;
 		
-		DefectCode temp = _defectCode.get(Integer.toString(code));
+		
+		Set<Integer> temp = new HashSet<>();
+		temp.equals(_defectCode);
+		//DefectCode temp = _defectCode.get(Integer.toString(code));
 		
 		if(temp == null)
 		{
-			_defectCode.put(Integer.toString(code), new DefectCode(code,1));
+			//put(Integer.toString(code), new DefectCode(code,1));
 		}
 		else
 		{
@@ -123,6 +130,20 @@ public class DefectByApp {
 		
 	}
 	
+	private DefectCode findCodeInSet(DefectCode app) {
+        Iterator<DefectCode> ite = _defectCode.iterator();
+        DefectCode tmp;
+
+        while (ite.hasNext()) {
+            tmp = ite.next();
+            if (tmp.equals(app)) {
+                return tmp;
+            }
+        }
+
+        return null;
+
+    }
 	
 	
 	public int getFirstDefectCode()
@@ -130,10 +151,7 @@ public class DefectByApp {
 		return this._firstDefectCode;
 	}
 	
-	
-	
-	
-	
+
 	
 	public String toString()
 	{
@@ -163,12 +181,6 @@ public class DefectByApp {
 	
 	
 	
-	
-	
-	
-	
-	
-	
 	/*
 	public void setCount(int count) {
 		this._count = count;
@@ -177,6 +189,9 @@ public class DefectByApp {
 	
 	
 	
-	
-	
 }
+
+
+
+
+

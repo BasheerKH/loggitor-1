@@ -29,4 +29,12 @@ public class DefectCode {
 	}
 	
 	
+	public boolean equals(DefectCode d)
+	{
+		if(this._code == d.getCode())
+			return true;
+		else
+			return false;
+	}
+
 }
